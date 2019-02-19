@@ -5,3 +5,4 @@ authors = ["David Lenfesty <lenfesty@ualberta.ca>"]
 edition = "2018"
 
 [dependencies]
+rand = "0.3.14"
