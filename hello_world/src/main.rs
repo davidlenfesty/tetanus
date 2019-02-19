@@ -10,6 +10,8 @@ fn main() {
 
         // Not here, that this has to go inside the loop
         // or else stuff messes up
+        // If you initialize outside the loop, then the value is shadowed
+        // by a u32, which is not a string and cannot be parsed
         let mut guess = String::new();
         
         io::stdin().read_line(&mut guess)
