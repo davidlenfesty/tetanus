@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "targetArchitecture": "x64",
-            "program": "${workspaceRoot}/target/debug/hello_world",
+            "program": "${workspaceRoot}/target/debug/guessing_game",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -28,7 +28,7 @@
             "customLaunchSetupCommands": [
                 {"text":"cd ${workspaceRoot}"},
                 {
-                    "text": "file target/debug/hello_world",
+                    "text": "file target/debug/guessing_game",
                     "description": "Load symbols",
                     "ignoreFailures": false
                 },
