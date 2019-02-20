@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "targetArchitecture": "x64",
-            "program": "${workspaceRoot}/target/debug/guessing_game",
+            "program": "${workspaceRoot}/target/debug/my_grep",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -28,7 +28,7 @@
             "customLaunchSetupCommands": [
                 {"text":"cd ${workspaceRoot}"},
                 {
-                    "text": "file target/debug/guessing_game",
+                    "text": "file target/debug/my_grep",
                     "description": "Load symbols",
                     "ignoreFailures": false
                 },
