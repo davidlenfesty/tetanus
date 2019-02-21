@@ -141,7 +141,7 @@ pub mod gpioa {
                 // Correct (????)
                 (*GPIOA::ptr()).moder.modify(|_, w| w.moder5().bits(mode));
                 // Set push/pull
-                (*GPIOA::ptr()).otyper.modify(|_, w| w.bits(1 << 5));
+                (*GPIOA::ptr()).otyper.modify(|_, w| w.bits(0 << 5));
             }
 
             resource
