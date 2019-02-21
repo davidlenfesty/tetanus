@@ -36,14 +36,26 @@ fn main() -> ! {
     // let mut rcc = st_periph.RCC.constrain();
     // I'm gonna do things completely different!
     let rcc = st_periph.RCC;
-    let gpioa = st_periph.GPIOA.split(&rcc.ahbenr);
 
-    let mut led = gpioa.pa5.into_output_push_pull();
+    let gpioa = st_periph.GPIOA;
+    unsafe {
+        rcc.ahbenr.modify(|_, w| w.iopaen().set_bit());
+        gpioa.moder.modify(|_, w| w.moder5().bits(0b01));
+        gpioa.otyper.modify(|_, w| w.bits(0 << 5));
+    }
+
+    //let gpioa = st_periph.GPIOA.split(&rcc.ahbenr);
+
+    //let mut led = gpioa.pa5.into_output_push_pull();
 
 
     loop {
         // your code goes here
-        led.set_high();
+        //led.set_high();
+        unsafe {
+            //gpioa.odr.write(|w| w.odr5().set_bit());
+            gpioa.bsrr.write(|w| w.bits(1 << 5));
+        }
 
     }
 }

@@ -77,7 +77,7 @@ pub mod gpioa {
 
         fn split(self, ahbenr: &AHBENR) -> Parts {
             // Enable clock for GPIOA
-            ahbenr.write(|w| w.iopaen().set_bit());
+            ahbenr.modify(|_, w| w.iopaen().set_bit());
 
             // Return "Parts"
             Parts {
@@ -93,14 +93,13 @@ pub mod gpioa {
         fn set_high(&mut self) {
             // Unsafe write to stateless register
             unsafe {
-                (*GPIOA::ptr()).odr.write(|w| w.odr5().set_bit());
+                (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << 5));
             }
         }
 
         fn set_low(&mut self) {
             unsafe {
-                // Set 'unset' bit in BSRR
-                (*GPIOA::ptr()).odr.write(|w| w.odr5().clear_bit());
+                (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << 5 + 16));
             }
         }
     }
@@ -140,9 +139,9 @@ pub mod gpioa {
             unsafe {
                 // Set mode to output
                 // Correct (????)
-                (*GPIOA::ptr()).moder.write(|w| w.moder5().bits(mode));
+                (*GPIOA::ptr()).moder.modify(|_, w| w.moder5().bits(mode));
                 // Set push/pull
-                (*GPIOA::ptr()).otyper.write(|w| w.bits(1 << 5));
+                (*GPIOA::ptr()).otyper.modify(|_, w| w.bits(1 << 5));
             }
 
             resource
