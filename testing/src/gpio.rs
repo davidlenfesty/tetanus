@@ -93,18 +93,14 @@ pub mod gpioa {
         fn set_high(&mut self) {
             // Unsafe write to stateless register
             unsafe {
-                // BSRR starts with set for 0-15, then reset for 16-31
-                // You could do this using a field withing bsrr,
-                // but doing it by shifting an index is more expandable
-                // (i.e.) easier to do in a macro
-                (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << 5));
+                (*GPIOA::ptr()).odr.write(|w| w.odr5().set_bit());
             }
         }
 
         fn set_low(&mut self) {
             unsafe {
                 // Set 'unset' bit in BSRR
-                (*GPIOA::ptr()).bsrr.write(|w| w.bits(1 << 16 + 5));
+                (*GPIOA::ptr()).odr.write(|w| w.odr5().clear_bit());
             }
         }
     }
@@ -144,13 +140,12 @@ pub mod gpioa {
             unsafe {
                 // Set mode to output
                 // Correct (????)
-                (*GPIOA::ptr()).moder.write(|w| w.bits(mode << (5*2)));
+                (*GPIOA::ptr()).moder.write(|w| w.moder5().bits(mode));
                 // Set push/pull
                 (*GPIOA::ptr()).otyper.write(|w| w.bits(1 << 5));
             }
 
             resource
-
         }
     }
 }

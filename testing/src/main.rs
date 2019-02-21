@@ -34,27 +34,16 @@ fn main() -> ! {
 
     // Example from japaric's f1xx HAL, constrain is implemented by him
     // let mut rcc = st_periph.RCC.constrain();
+    // I'm gonna do things completely different!
     let rcc = st_periph.RCC;
-    //let gpioa = st_periph.GPIOA.split(&rcc.ahbenr);
+    let gpioa = st_periph.GPIOA.split(&rcc.ahbenr);
 
-    //let mut led = gpioa.pa5.into_output_push_pull();
-
-    let gpioa = st_periph.GPIOA;
-
-    unsafe {
-        rcc.ahbenr.write(|w| w.iopaen().set_bit());
-
-        gpioa.moder.modify(|_, w| w.moder5().bits(0b01));
-        gpioa.otyper.modify(|_, w| w.otyper5().set_bit());
-    }
+    let mut led = gpioa.pa5.into_output_push_pull();
 
 
     loop {
         // your code goes here
-        //led.set_high();
-        unsafe {
-            //gpioa.bsrr.write(|w| w.bits(1 << 5));
-        }
+        led.set_high();
 
     }
 }
