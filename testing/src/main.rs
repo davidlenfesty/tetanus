@@ -27,10 +27,9 @@ use embedded_hal::digital::OutputPin;
 // See chapter 6 of the embedded rust book
 // Safer than static mut, but obviously less wieldy
 // 5 LEVELS OF GENERIC TYPES
-// static GPIO: Mutex<RefCell<Option<crate::gpio::gpioa::PA5<Output<PushPull>>>>> =
-//     Mutex::new(RefCell::new(None));
+static GPIO: Mutex<RefCell<Option<crate::gpio::gpioa::PA5<Output<PushPull>>>>> =
+    Mutex::new(RefCell::new(None));
 
-static mut LED: Option<Box<PA5<Output<PushPull>>>> = None;
 
 #[entry]
 fn main() -> ! {
@@ -52,13 +51,11 @@ fn main() -> ! {
     let rcc = st_periph.RCC;
     let gpioa = st_periph.GPIOA.split(&rcc.ahbenr);
 
-    unsafe {
-        LED = Some(Box::new(gpioa.pa5.into_output_push_pull()));
-    }
+    let led = gpioa.pa5.into_output_push_pull();
 
     // store gpioa "Parts" into mutex.
     // Cannot be accessed anymore except from the Mutex
-    // interrupt::free(|cs| GPIO.borrow(cs).replace(Some(led)));
+    interrupt::free(|cs| GPIO.borrow(cs).replace(Some(led)));
 
 
     loop {
@@ -72,24 +69,16 @@ fn SysTick() {
 
     *COUNT += 1;
 
-    unsafe {
+    interrupt::free(|cs| {
+        let led = GPIO.borrow(cs).borrow();
         if (*COUNT % 2) == 0 {
-            LED.as_ref().unwrap().set_high();
+            //set led high
+            led.as_ref().unwrap().set_high();
         } else {
-            LED.as_ref().unwrap().set_high();
+            // set led low
+            led.as_ref().unwrap().set_low();
         }
-    }
-
-    //interrupt::free(|cs| {
-    //    let led = GPIO.borrow(cs).borrow();
-    //    if (*COUNT % 2) == 0 {
-    //        //set led high
-    //        led.as_ref().unwrap().set_high();
-    //    } else {
-    //        // set led low
-    //        led.as_ref().unwrap().set_low();
-    //    }
-    //});
+    });
 
     hprintln!("Count is: {}", *COUNT).unwrap();
 }
