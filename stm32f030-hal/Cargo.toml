@@ -1,0 +1,17 @@
+[package]
+name = "stm32f030-hal"
+version = "0.1.0"
+authors = ["David Lenfesty <lenfesty@ualberta.ca>"]
+edition = "2018"
+description = "STM32F030 Hardware Abstraction Layer"
+
+[dependencies]
+cortex-m = "0.5.8"
+
+[dependencies.stm32f0]
+version = "0.6.0"
+features = ["stm32f0x0"]
+
+[dependencies.embedded-hal]
+version = "0.2.2"
+features = ["unproven"]

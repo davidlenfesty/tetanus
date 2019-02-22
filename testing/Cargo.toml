@@ -6,19 +6,18 @@ name = "testing"
 version = "0.1.0"
 
 [dependencies]
-cortex-m = "0.5.8"
-cortex-m-rt = "0.6.5"
+cortex-m-rtfm = "0.4.1"
 cortex-m-semihosting = "0.3.2"
 panic-semihosting = "0.5.1"
-nb = "0.1.1"
 
 [dependencies.stm32f0]
 version = "0.6.0"
-features = ["stm32f0x0", "rt"]
+features = ["stm32f0x0"]
 
-[dependencies.embedded-hal]
-features = ["unproven"]
-version = "0.2.2"
+#[dependencies.stm32f030-hal]
+#path = "../stm32f030-hal"
+#version = "0.1.0"
+
 
 [[bin]]
 name = "testing"
