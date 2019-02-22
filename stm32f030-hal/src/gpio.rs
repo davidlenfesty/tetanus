@@ -52,7 +52,7 @@ pub mod gpioa {
 
     pub use embedded_hal::digital::{InputPin, OutputPin, StatefulOutputPin, toggleable};
 
-    use stm32f0::stm32f0x0;
+    pub use stm32f0::stm32f0x0;
     use stm32f0x0::GPIOA;
     use stm32f0x0::rcc::AHBENR;
 
