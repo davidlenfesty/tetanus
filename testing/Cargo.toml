@@ -12,7 +12,11 @@ panic-semihosting = "0.5.1"
 
 [dependencies.stm32f0]
 version = "0.6.0"
-features = ["stm32f0x0"]
+features = ["stm32f0x0", "rt"]
+
+[dependencies.stm32f030-hal]
+version = "0.1.0"
+path = "../stm32f030-hal"
 
 #[dependencies.stm32f030-hal]
 #path = "../stm32f030-hal"
