@@ -1,0 +1,6 @@
+[registers]
+
+[registers.DDRA]
+description = "Data direction A"
+pin = 27
+enabled = true

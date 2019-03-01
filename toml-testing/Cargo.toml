@@ -1,0 +1,8 @@
+[package]
+name = "toml-testing"
+version = "0.1.0"
+authors = ["David Lenfesty <lenfesty@ualberta.ca>"]
+edition = "2018"
+
+[dependencies]
+toml = "0.4"
