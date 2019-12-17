@@ -2,6 +2,7 @@ use std::fs;
 use std::env;
 use std::error::Error;
 
+#[derive(Debug, PartialEq)]
 pub struct Config {
     pub query: String,
     pub filename: String,
@@ -23,6 +24,7 @@ impl Config {
     }
 }
 
+/// Runs the grep searcher thingie
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
 
@@ -70,6 +72,7 @@ fn search_case_insensitive<'a>(query: &str, contents: &'a str)
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::ErrorKind;
 
     #[test]
     fn case_sensitive() {
@@ -98,5 +101,35 @@ Trust me.";
         vec!["Rust:", "Trust me."],
         search_case_insensitive(query, contents)
     );
+    }
+
+    #[test]
+    fn config_too_few_args() {
+        let args = [String::from("foo")];
+        
+        assert_eq!(Config::new(&args), Err("not enough arguments"));
+    }
+
+    #[test]
+    fn config_no_args() {
+        let args = [];
+        
+        assert_eq!(Config::new(&args), Err("not enough arguments"));
+    }
+
+    #[test]
+    fn run_file_does_not_exist() {
+        let config = Config {
+            query: String::from("foo"),
+            filename: String::from("bar.txt"),
+            case_sensitive: false
+        };
+
+        let error = run(config)
+            .expect_err("run should error if a file does not exist")
+            .downcast_ref::<std::io::Error>().unwrap().kind();
+
+        assert_eq!(error, ErrorKind::NotFound);
+
     }
 }
