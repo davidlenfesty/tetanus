@@ -4,34 +4,58 @@
 /// - add db access stuff
 /// - handle different paths
 /// - etc
+/// 
 
 use std::convert::Infallible;
 use std::net::SocketAddr;
+use std::error::Error;
 use hyper::{Body, Request, Response, Server, Method, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
+use webserver_db::models::Page;
+
+
+mod parser;
+
+// bad naming
+fn get_page(path: Vec<String>) -> Result<Page, std::io::Error> {
+    let connection = webserver_db::establish_connection();
+    let root_page = webserver_db::find_page(&connection, -1, "/")?;
+
+    let mut parent = root_page.id;
+
+    for name in path.iter().next() {
+        let page = webserver_db::find_page(&connection, parent, name)?;
+
+        // end of url, so finish return
+        if name.next() == None {
+            page
+        }
+    }
+
+    Err();
+}
+
 
 async fn echo(req: Request<Body>) -> Result<Response<Body>, hyper::Error> {
     let mut response = Response::new(Body::empty());
 
-    match (req.method(), req.uri().path()) {
-        (&Method::GET, "/") => {
-            *response.body_mut() = Body::from("Try POSTING to /echo");
-        },
-        (&Method::POST, "/echo") => {
-            // echo request
-            *response.body_mut() = req.into_body();
-        },
-        (&Method::POST, "/echo/reverse") => {
-            let full_body = hyper::body::to_bytes(req.into_body()).await?;
+    // This is needed because if you take the path directly,
+    // you are borrowing, and doing body::from() on a borrow
+    // means the string is destroyed when you return the function
+    let path = String::from(req.uri().path());
 
-            // Reverse body around!
-            let reversed = full_body.iter()
-                .rev()
-                .cloned()
-                .collect::<Vec<u8>>();
-
-            *response.body_mut() = reversed.into();
-        }
+    match (req.method(), path) {
+        (&Method::GET, path) => {
+            let url = parser::parse_url(path.as_str());
+            match get_page(url) {
+                Ok(page) => {
+                    *response.body_mut() = Body::from(page.name);
+                }
+                _ => {
+                    *response.status_mut() = StatusCode::NOT_FOUND;
+                },
+            };
+        },
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;
         },

@@ -11,7 +11,7 @@ fn main() {
     let target = args().nth(1).expect("Expected a target!");
     let pattern  = format!("%{}%", target);
 
-    let connection = establish_connection();
+    let connection = establish_connection().unwrap();
     let num_deleted = diesel::delete(pages.filter(name.like(pattern)))
         .execute(&connection)
         .expect("Error deleting posts");

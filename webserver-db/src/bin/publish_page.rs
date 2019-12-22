@@ -11,7 +11,7 @@ fn main() {
 
     let id = args().nth(1).expect("publish_page requires a page id")
         .parse::<i32>().expect("Invalid ID");
-    let connection = establish_connection();
+    let connection = establish_connection().unwrap();
 
     let page = diesel::update(pages.find(id))
         .set(published.eq(true))

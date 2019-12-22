@@ -1,9 +1,10 @@
 table! {
     pages (id) {
         id -> Int4,
+        parent_id -> Int4,
         name -> Varchar,
         body -> Text,
-        isfolder -> Bool,
+        is_folder -> Bool,
         published -> Bool,
     }
 }

@@ -8,7 +8,7 @@ use self::diesel::prelude::*;
 fn main() {
     use webserver_db::schema::pages::dsl::*;
 
-    let connection = establish_connection();
+    let connection = establish_connection().unwrap();
     let results = pages.filter(published.eq(true))
         .limit(5)
         .load::<Page>(&connection)
